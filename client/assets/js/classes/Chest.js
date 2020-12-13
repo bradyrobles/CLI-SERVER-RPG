@@ -4,6 +4,7 @@ class Chest extends Phaser.Physics.Arcade.Image {
 		this.scene = scene; // the scene this game object will be added to
 		this.coins = coins; // the amount of coins this chest contains
 		this.id = id;
+		this.test = 1;
 
 		// enable physics
 		this.scene.physics.world.enable(this);
