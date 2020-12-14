@@ -1,4 +1,4 @@
-const path = require('path'); //Built in node module, easier to work with file and directory paths
+const path = require('path'); // Built in node module, easier to work with file and directory paths
 const webpack = require('webpack');
 
 module.exports = {
@@ -11,6 +11,11 @@ module.exports = {
 	module: {
 		// specify how to handle different filetypes
 		rules: [
+			{
+				test: /\.js$/, // for all js files, use babel to transpile
+				use: { loader: 'babel-loader' },
+				exclude: /node_modules/, // we do not want to run modules js code
+			},
 			{
 				test: [/\.vert$/, /\.frag$/], // regex to tell webpack type of file
 				use: 'raw-loader', // use raw-loader for .vert and .frag files
@@ -25,6 +30,7 @@ module.exports = {
 			WEBGL_RENDERER: JSON.stringify(true),
 		}),
 	],
+	// needed for hot reload in dev env
 	devServer: {
 		publicPath: '/build/',
 	},
