@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { scaleFactor } from '../game_manager/utils';
 
 export default class Monster extends Phaser.Physics.Arcade.Image {
 	constructor(scene, x, y, key, frame, id, health, maxHealth) {

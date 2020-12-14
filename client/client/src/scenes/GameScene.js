@@ -1,4 +1,10 @@
 import * as Phaser from 'phaser';
+import PlayerContainer from '../classes/player/PlayerContainer';
+import Chest from '../classes/Chest';
+import Monster from '../classes/Monster';
+import GameManager from '../game_manager/GameManager';
+
+import { scaleFactor } from '../game_manager/utils';
 
 export default class GameScene extends Phaser.Scene {
 	constructor() {
@@ -233,7 +239,8 @@ export default class GameScene extends Phaser.Scene {
 			this.monsters.getChildren().forEach((monster) => {
 				Object.keys(monsters).forEach((monsterID) => {
 					if (monster.id === monsterID) {
-						this.physics.moveToObject(monster, monsters[monsterID], 64); // use physics to move object not just snap to position
+						// use physics to move object not just snap to position
+						this.physics.moveToObject(monster, monsters[monsterID], 64);
 					}
 				});
 			});
@@ -267,7 +274,8 @@ export default class GameScene extends Phaser.Scene {
 		});
 
 		// create the game manager
-		this.gameManager = new GameManager(this, this.map.map.objects); // .map field of this.map is the .json tilemap
+		// .map field of this.map is the .json tilemap
+		this.gameManager = new GameManager(this, this.map.map.objects);
 		this.gameManager.setup();
 	}
 }
