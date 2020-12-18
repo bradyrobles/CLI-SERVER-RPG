@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+/* eslint-disable func-names */
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose;
 
@@ -18,7 +19,7 @@ const UserSchema = new Schema({
 	},
 	username: {
 		type: String,
-		required: true, //validation done by mongoose for required fields
+		required: true, // validation done by mongoose for required fields
 	},
 	resetToken: {
 		type: String,
@@ -36,7 +37,7 @@ UserSchema.pre('save', async function (next) {
 	next();
 });
 
-UserSchema.on('index', function (err) {
+UserSchema.on('index', (err) => {
 	if (err) {
 		console.error(err);
 	}
@@ -50,4 +51,4 @@ UserSchema.methods.isValidPassword = async function (password) {
 
 const UserModel = mongoose.model('user', UserSchema);
 
-module.exports = UserModel;
+export default UserModel;
