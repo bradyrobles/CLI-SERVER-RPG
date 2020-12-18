@@ -1,17 +1,11 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
 
-const hbs = require('nodemailer-express-handlebars');
-const nodemailer = require('nodemailer');
-const path = require('path'); //needed when we configure handlebars to point to template directory
+import hbs from 'nodemailer-express-handlebars';
+import nodemailer from 'nodemailer';
+import path from 'path'; // needed when we configure handlebars to point to template directory
+import crypto from 'crypto';
+import UserModel from '../models/UserModel';
 
-const UserModel = require('../models/UserModel');
-let crypto;
-try {
-	crypto = require('crypto');
-} catch (err) {
-	console.log('crypto support is disabled!');
-}
 const email = process.env.EMAIL;
 const password = process.env.PASSWORD;
 
@@ -38,8 +32,10 @@ const handlebarsOptions = {
 
 smtpTransport.use('compile', hbs(handlebarsOptions));
 
+const router = express.Router();
+
 router.post('/forgot-password', async (request, response) => {
-	if (Object.keys(request.body).length == 0 || !request.body.email) {
+	if (Object.keys(request.body).length === 0 || !request.body.email) {
 		response.status(400).json({ message: 'invalid body', status: 400 });
 	} else {
 		const userEmail = request.body.email;
@@ -57,8 +53,9 @@ router.post('/forgot-password', async (request, response) => {
 
 		// update user reset password token and expiration
 		await UserModel.findByIdAndUpdate(
+			// eslint-disable-next-line no-underscore-dangle
 			{ _id: user._id },
-			{ resetToken: token, resetTokenExp: Date.now() + 60000 }
+			{ resetToken: token, resetTokenExp: Date.now() + 60000 },
 		);
 		// send user password reset email
 		const emailOptions = {
@@ -84,13 +81,14 @@ router.post('/forgot-password', async (request, response) => {
 });
 
 router.post('/reset-password', async (request, response) => {
-	if (Object.keys(request.body).length == 0 || !request.body.email) {
+	if (Object.keys(request.body).length === 0 || !request.body.email) {
 		response.status(400).json({ message: 'invalid body', status: 400 });
 	} else {
 		const userEmail = request.body.email;
 		const user = await UserModel.findOne({
 			resetToken: request.body.token,
-			resetTokenExp: { $gt: Date.now() }, // check if token is expired with greater than 'gt' search tags
+			// check if token is expired with greater than 'gt' search tags
+			resetTokenExp: { $gt: Date.now() },
 			email: userEmail,
 		});
 		if (!user) {
@@ -111,7 +109,7 @@ router.post('/reset-password', async (request, response) => {
 			return;
 		}
 
-		//update user model
+		// update user model
 		user.password = request.body.password;
 		user.resetToken = undefined;
 		user.resetTokenExp = undefined;
@@ -135,4 +133,4 @@ router.post('/reset-password', async (request, response) => {
 	}
 });
 
-module.exports = router;
+export default router;

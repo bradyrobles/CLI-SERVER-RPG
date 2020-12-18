@@ -1,8 +1,7 @@
-const passport = require('passport');
-const localStrategy = require('passport-local');
-const jwtStrategy = require('passport-jwt');
-
-const UserModel = require('../models/UserModel');
+import passport from 'passport';
+import localStrategy from 'passport-local';
+import jwtStrategy from 'passport-jwt';
+import UserModel from '../models/UserModel';
 
 // handle user registration
 passport.use(
@@ -14,8 +13,7 @@ passport.use(
 			passReqToCallback: true,
 		},
 		async (request, email, password, done) => {
-			//use async to allow await for mongoose
-
+			// use async to allow await for mongoose
 			try {
 				const { username } = request.body;
 				const user = await UserModel.create({ email, password, username });
@@ -23,8 +21,8 @@ passport.use(
 			} catch (error) {
 				return done(error);
 			}
-		}
-	)
+		},
+	),
 );
 
 // handle user login
@@ -38,7 +36,8 @@ passport.use(
 		async (email, password, done) => {
 			try {
 				// validate user.email
-				const user = await UserModel.findOne({ email }); // find matching docs in db and return first result
+				// find matching docs in db and return first result
+				const user = await UserModel.findOne({ email });
 				if (!user) {
 					return done(new Error('user not found'), false);
 				}
@@ -52,11 +51,11 @@ passport.use(
 			} catch (error) {
 				return done(error);
 			}
-		}
-	)
+		},
+	),
 );
 
-//verify jwt
+// verify jwt
 passport.use(
 	new jwtStrategy.Strategy(
 		{
@@ -75,6 +74,6 @@ passport.use(
 			} catch (error) {
 				return done(error);
 			}
-		}
-	)
+		},
+	),
 );

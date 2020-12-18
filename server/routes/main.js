@@ -1,33 +1,27 @@
-const express = require('express');
-const passport = require('passport');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { urlencoded } = require('body-parser');
-const tokenList = {};
+import express from 'express';
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
 
-/*
-// request - express object
-router.get('/', (request, response) => {
-	response.send('hello world this is cool2');
-});
-*/
+const tokenList = {};
+const router = express.Router();
 
 router.get('/status', async (request, response) => {
-	//set status and payload at the same time
+	// set status and payload at the same time
 	response.status(200).json({ message: 'ok', status: 200 });
 });
 
 router.post(
 	'/signup',
 	passport.authenticate('signup', { session: false }),
-	async (request, response, next) => {
+	async (request, response) => {
 		response
 			.status(200)
 			.json({ message: 'signup was successful', status: 200 });
-	}
+	},
 );
 
 router.post('/login', async (request, response, next) => {
+	// eslint-disable-next-line consistent-return
 	passport.authenticate('login', async (error, user) => {
 		try {
 			if (error) {
@@ -53,7 +47,7 @@ router.post('/login', async (request, response, next) => {
 				const refreshToken = jwt.sign(
 					{ user: body },
 					process.env.JWT_REFRESH_SECRET,
-					{ expiresIn: 86400 }
+					{ expiresIn: 86400 },
 				);
 
 				// store token in cookie
@@ -78,8 +72,6 @@ router.post('/login', async (request, response, next) => {
 		}
 	})(request, response, next);
 });
-
-router.route('/logout').get(processLogoutRequest).post(processLogoutRequest);
 
 // update user's 'jwt' from provided 'refreshToken'
 router.post('/token', (request, response) => {
@@ -118,5 +110,7 @@ function processLogoutRequest(request, response) {
 	}
 }
 
+router.route('/logout').get(processLogoutRequest).post(processLogoutRequest);
+
 // Use this line so we can require this file in 'index.js'
-module.exports = router;
+export default router;

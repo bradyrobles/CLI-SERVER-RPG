@@ -1,36 +1,36 @@
-require('dotenv').config();
+import 'dotenv/config';
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+import passport from 'passport';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const mongoose = require('mongoose');
-const passport = require('passport');
-
-const routes = require('./routes/main');
-const passwordRoutes = require('./routes/password');
-const secureRoutes = require('./routes/secure');
-const { response } = require('express');
+import routes from './routes/main';
+import passwordRoutes from './routes/password';
+import secureRoutes from './routes/secure';
 
 // setup mongoDB connection
-mongoose.set('useFindAndModify', false); // needed for depreciation warnings
 const uri = process.env.MONGO_CONNECTION_URL;
 const mongoConfig = {
 	useNewUrlParser: true,
 	useCreateIndex: true,
 };
-
 if (process.env.MONGO_USER_NAME && process.env.MONGO_PASSWORD) {
 	mongoConfig.auth = { authSource: 'admin' };
 	mongoConfig.user = process.env.MONGO_USER_NAME;
 	mongoConfig.pass = process.env.MONGO_PASSWORD;
 }
+console.log(uri);
 mongoose.connect(uri, mongoConfig);
 
 mongoose.connection.on('error', (error) => {
 	console.log(error);
 	process.exit(1);
 });
+
+mongoose.set('useFindAndModify', false); // needed for depreciation warnings
 
 // setup ports
 const app = express();
@@ -50,16 +50,16 @@ app.get(
 	passport.authenticate('jwt', { session: false }), // protects this route
 	(request, response) => {
 		response.status(200).json(request.user);
-	}
+	},
 );
 
 // Setup static assets
 // tell express.static() to look in 'public' for static assets
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, '/public')));
 
 // allow all requests to be funneled to 'index.html' to be rendered
 app.get('/', (request, response) => {
-	response.send(__dirname + '/index.html');
+	response.send(path.join(__dirname, '/index.html'));
 });
 
 // setup routes
@@ -74,6 +74,7 @@ app.use((request, response) => {
 });
 
 // handle errors, error handlers should be the last middleware
+// eslint-disable-next-line no-unused-vars
 app.use((error, request, response, next) => {
 	console.log(error);
 	response
@@ -81,7 +82,7 @@ app.use((error, request, response, next) => {
 		.json({ error: error.message, status: 500 });
 });
 
-//connect to mongoose first, then start listening on port
+// connect to mongoose first, then start listening on port
 mongoose.connection.on('connected', () => {
 	console.log('connected to mongo');
 	app.listen(port, () => {

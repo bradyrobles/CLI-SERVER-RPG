@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import ChatModel from '../models/ChatModel';
+
 const router = express.Router();
 
-const ChatModel = require('../models/ChatModel');
 router.post('/chat', async (request, response) => {
-	if (Object.keys(request.body).length == 0 || !request.body.message) {
+	if (Object.keys(request.body).length === 0 || !request.body.message) {
 		response.status(400).json({ message: 'invalid body', status: 400 });
 	} else {
 		const { message } = request.body;
@@ -13,4 +14,4 @@ router.post('/chat', async (request, response) => {
 	}
 });
 
-module.exports = router;
+export default router;
