@@ -1,4 +1,4 @@
 server/.env
 server/node_modules
-client/client/node_modules
-client/client/build/project.bundle.js
+client/node_modules
+client/build/project.bundle.js

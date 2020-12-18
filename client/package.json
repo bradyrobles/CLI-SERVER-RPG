@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "npx webpack --mode production",
 		"start": "npm run build && npx webpack serve --port=8000 --mode development",
-		"lint": "npx eslint src/ --fix"
+		"lint": "npx eslint src/ --fix",
+		"bundle": "sh bundle.sh"
 	},
 	"author": "Brady Robles",
 	"license": "ISC",

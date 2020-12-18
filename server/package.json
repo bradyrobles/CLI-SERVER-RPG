@@ -7,7 +7,9 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "node index.js",
 		"nodemon": "npx nodemon index.js --exec babel-node",
-		"lint": "npx eslint src/ --fix"
+		"lint": "npx eslint src/ --fix",
+		"mongo:up": "docker-compose up -d",
+		"mongo:down": "docker-compose down"
 	},
 	"repository": {
 		"type": "git",
